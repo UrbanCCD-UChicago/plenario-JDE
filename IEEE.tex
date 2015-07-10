@@ -151,7 +151,7 @@ To evaluate our choices, we performed a through performance evaluation and deter
 We developed a benchmark specific to Plenario because unlike other geospatial benchmarks, Plenario has no separate database instantiation and query generation phase; database tables and queries are determined by an incoming user-workload leading to an openly-writable spatial storage system. To simulate the discovery and exploration phases in Plenario, we simulated a closed loop Markov-chain synthetic workload generator in Python. The  Markov-chain consists of two different states, ``add\_data'' and ``query", in which the ``query phase'' consists of five different states, including ``initial\_query'', ``expand\_time'', ``narrow\_time'', ``expand\_geography'' and ``narrow\_geography''.
 The current state gets updated after each query and the system chooses between query with probability 0.85 and upload with probability 0.15. Within the query phase, expansion and reduction of spatial attributes occurs with equal probability, and spatial attributes are chosen over time attributes by 0.6 to 0.4. These probabilities are chosen based on user query logs and estimated patterns. 
 
-As part of a session, users often change spatial and time attributes by either expanding them or narrowing them from an initial specification. Expansion and reduction of time attribute is simply achieved by changing both the starting and ending dates by an equal amount such that the new date range is a factor $k$ times of that of the old date range. $k$ is chosen so as to reflect daily, weekly, and monthly patterns. To expand and narrow spatial boundaries such that the new query is again a convex polygon \footnote{A convex polygon is not a requirement of the Plenario API. However logs show that all users specify indeed specify convex polygons.} we follow a simple single parametric method. For expansion, given an $N$-sided polygon with coordinates $(x_1,y_1),\ldots,(x_n, y_n)$,
+As part of a session, users often change spatial and time attributes by either expanding them or narrowing them from an initial specification. Expansion and reduction of time attribute is simply achieved by changing both the starting and ending dates by an equal amount such that the new date range is a factor $k$ times of that of the old date range. $k$ is chosen so as to reflect daily, weekly, and monthly patterns. To expand and narrow spatial boundaries such that the new query is again a convex polygon \footnote{A convex polygon is not a requirement of the Plenario API. However logs show that all users indeed specify convex polygons.} we follow a simple single parametric method. For expansion, given an $N$-sided polygon with coordinates $(x_1,y_1),\ldots,(x_n, y_n)$,
 \begin{enumerate}[I.]
 \itemsep0em 
  \item Find the smallest rectangle that exactly covers all the vertices of the polygon by finding the maximum and minimum of the coordinates of all the vertices; 
@@ -161,11 +161,24 @@ As part of a session, users often change spatial and time attributes by either e
  \item The newly simulated points form the vertices of our new polygon. 
  \end{enumerate}
  The same algorithm works for narrowing the polygon except instead of expanding by a factor $k$, we narrow by $k$. The algorithm is guaranteed to produce a convex polygon since all the new points are simulated randomly in four different sub-rectangles, so it's impossible that they lie on a line.
+ 
+Finally, in the ``add\_data'' state, data is generated for a given spatial with a skew ranging from 0.1-0.3 and with the size of the data chosen from a zipf's distribution varying from a few kilobytes to a few gigabytes.  
+
 
 \subsection{Evaluation}
-We used the Markov based query generator to generate queries for three possible choices of databases: 
-% Evaluation
+To evaluate the query and upload workload from the Markov-based generator, we chose three databases: (a) PostGIS, (b) Accumulo, and (c) SciDB. Plenario is currently hosted on PostGIS, which is a traditional RDBMS with spatial index support. However, it does not scale out very well, especially when several datasets are uploaded. We chose Accumulo and SciDB as other possible database choices which provide the option of scaling out onto multiple nodes. Accumulo is a key-value store system, and SciDB is a multi-dimensional array system. To correctly ingest 2-dimensional geospatial data into Accumulo, which is a single-dimensional key-value store, we create a geohash of the spatial attributes, the latitude and the longitude. Geohashing maps 2-$d$ points into a 1-$d$ value. Since points that are near to each other have geohash with the same prefix, locality is improved significantly when points are stored by order of geohash. 
+Besides, geohash can obtain good precision in a small scale of bit length. While there are other schemes of linearizing spatial data that are more precise than geohash in terms of maintaining the locality of spatial points, geohash is simple to implement and is used significantly in key-value systems for spatial indexing. In SciDB we consider latitude and longitude as two different dimensions of a grid that is divided into cells. The size of the grid is decided based on the cross-product of the number of latitude and longitude points, respectively in the incoming data. Since not every combination of a latitude and longitude cell may be point in the data, this sets up a 2-dimensional sparse array in SciDB. 
 
+
+ as PostGIS does not provide an easy way to distribute data into multiple nodes. However, in its current form and with the current size of Plenario's database it provides 
+% Evaluation
+Traditional RDBMS with spatial index support.
+Original backend in Plenario, however not able to scale up. When datasets keep accumulating, tables would grow to a large scale, util volume of data and index exceed the capacity of a single machine. 
+Scidb stores data as multidimensional array. 
+When consider latitude and longitude as separate indexes, all the datasets would form a 2-d sparse array. Then query on given polygon area would be a nested loop on given index range, which checks every record if it is within that area. 
+A BigTable-like key-value store system. 
+Geohash(Z-Order Curve) as row key to improve locality. 
+Easily scalable, as batchwriter and batchscanner are highly optimized to send and query mutations to tablet servers.
 
 \section{Plenario Use Cases and Early Lessons Learned}
 We have discussed a number of advantages the Plenario project was designed to provide for researchers, government employees, developers, journalists, and citizen users. Here we discuss several specific use cases where Plenario is providing support for social and economic science research (The Chicago Plenario instance) and for community engagement on urban sustainability, resilience, and livability goals (The San Francisco Plenario instance). 
