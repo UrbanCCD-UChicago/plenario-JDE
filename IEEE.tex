@@ -171,8 +171,10 @@ Besides, geohash can obtain good precision in a small scale of bit length. While
 
 The databases are setup an an AWS T2.Extra Large instance on Ubuntu 14.04. We used Accumulo version 1.7.0 with a single master and tablet server. The accompanying Hadoop version is 2.6. configured for one name node, data node, and secondary node respectively. Hadoop uses Zookeeper v3.4.6 with one server. We used version 14.12 of SciDB with four instances one SciDB master and one worker. With this setup, we use our experiments to answer four important questions regarding Plenario's architecture: (1) Which data model, the grid model, the geohashed key-value model, or the R-tree-based relational model provides the best performance for querying \emph{i.e.} quickly retrieving the relevant datasets from Master table given a spatial polygon. (2) Given that Plenario accepts CSV data, how do the different database systems compare in terms of cost of ingesting? (3) When different users concurrently access a system uploading and querying datasets, how do the systems compare in terms of the total number of transactions supported per sec, and finally, (4) What is the cost of hosting the Plenario PostGIS database on different EC2 instances?
 
-
 Figure \ref{} compares the three databases for ingesting large amounts of data. 
+
+
+
 \section{Plenario Use Cases and Early Lessons Learned}
 We have discussed a number of advantages the Plenario project was designed to provide for researchers, government employees, developers, journalists, and citizen users. Here we discuss several specific use cases where Plenario is providing support for social and economic science research (The Chicago Plenario instance) and for community engagement on urban sustainability, resilience, and livability goals (The San Francisco Plenario instance). 
 
