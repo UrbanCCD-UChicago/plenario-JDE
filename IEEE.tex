@@ -173,6 +173,7 @@ The databases are setup an an AWS T2.Extra Large instance on Ubuntu 14.04. We us
 
 Figure \ref{} compares the three databases for ingesting large amounts of data. 
 
+With goals to expand the Chicago instance to thousands of data sets, the team is also beginning to analyze the scalability of the Master Table approach and of the specific database implementation.
 
 
 \section{Plenario Use Cases and Early Lessons Learned}
@@ -183,7 +184,6 @@ The Chicago instance of Plenario, active at http://plenar.io, has been implement
 
 As the Chicago instance has grown from dozens of data sets to over 150, the quality of source data has been more readily exposed due to the automatic data set summaries produced in response to user searches. A single error in the date field, for instance, results in a summary that suggests Plenario contains data from prehistoric times, or far into the future. A set of consistency checks to flag obvious errors of this kind (such as impossible dates) is a sensible approach, but all errors are not readily flagged by algorithms. The very nature of data is that errors and holes are inevitable, and thus it will be important to not only work with data providers to fix obvious errors but to provide Plenario users with mechanisms to discover and flag errors. 
 
-With goals to expand the Chicago instance to thousands of data sets, the team is also beginning to analyze the scalability of the Master Table approach and of the specific database implementation.
 
 \subsection{\textbf{Enabling Community-Driven Urban Sustainability, Resilience, and Livability: The San Francisco Instance}}\label{san-francisco-instance}
 The platform is also deployed experimentally as part of the City of San Francisco's Sustainable Development initiative \cite{sf-sustainable-systems}. This project has led to Plenario enhancements necessary to support additional data types and the use of Plenario as a community ``dashboard''---where the visual interface is the primary use, in contrast to the Chicago deployment, which emphasizes the need to refine and export data for advanced data analytics. In several cases, notably the support for adding geographical information in the form of ESRI shapefiles to the database, the San Francisco implementation has driven key enhancements to the core Plenario code base. In other cases there are customizations that will be incorporated after evaluation in the San Francisco instance.
