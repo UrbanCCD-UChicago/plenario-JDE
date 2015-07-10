@@ -169,16 +169,7 @@ Finally, in the ``add\_data'' state, data is generated for a given spatial with 
 To evaluate the query and upload workload from the Markov-based generator, we chose three databases: (a) PostGIS, (b) Accumulo, and (c) SciDB. Plenario is currently hosted on PostGIS, which is a traditional RDBMS with spatial index support. However, it does not scale out very well, especially when several datasets are uploaded. We chose Accumulo and SciDB as other possible database choices which provide the option of scaling out onto multiple nodes. Accumulo is a key-value store system, and SciDB is a multi-dimensional array system. To correctly ingest 2-dimensional geospatial data into Accumulo, which is a single-dimensional key-value store, we create a geohash of the spatial attributes, the latitude and the longitude. Geohashing maps 2-$d$ points into a 1-$d$ value. Since points that are near to each other have geohash with the same prefix, locality is improved significantly when points are stored by order of geohash. 
 Besides, geohash can obtain good precision in a small scale of bit length. While there are other schemes of linearizing spatial data that are more precise than geohash in terms of maintaining the locality of spatial points, geohash is simple to implement and is used significantly in key-value systems for spatial indexing. In SciDB we consider latitude and longitude as two different dimensions of a grid that is divided into cells. The size of the grid is decided based on the cross-product of the number of latitude and longitude points, respectively in the incoming data. Since not every combination of a latitude and longitude cell may be point in the data, this sets up a 2-dimensional sparse array in SciDB. 
 
-
- as PostGIS does not provide an easy way to distribute data into multiple nodes. However, in its current form and with the current size of Plenario's database it provides 
-% Evaluation
-Traditional RDBMS with spatial index support.
-Original backend in Plenario, however not able to scale up. When datasets keep accumulating, tables would grow to a large scale, util volume of data and index exceed the capacity of a single machine. 
-Scidb stores data as multidimensional array. 
-When consider latitude and longitude as separate indexes, all the datasets would form a 2-d sparse array. Then query on given polygon area would be a nested loop on given index range, which checks every record if it is within that area. 
-A BigTable-like key-value store system. 
-Geohash(Z-Order Curve) as row key to improve locality. 
-Easily scalable, as batchwriter and batchscanner are highly optimized to send and query mutations to tablet servers.
+The databases are setup an an AWS T2.Extra Large instance on Ubuntu 14.04. We used Accumulo version 1.7.0 with a single master and tablet server. The accompanying Hadoop version is 2.6. configured for one name node, data node, and secondary node respectively. Hadoop uses Zookeeper v3.4.6 with one server. We used version 14.12 of SciDB with four instances one SciDB master and one worker. 
 
 \section{Plenario Use Cases and Early Lessons Learned}
 We have discussed a number of advantages the Plenario project was designed to provide for researchers, government employees, developers, journalists, and citizen users. Here we discuss several specific use cases where Plenario is providing support for social and economic science research (The Chicago Plenario instance) and for community engagement on urban sustainability, resilience, and livability goals (The San Francisco Plenario instance). 
