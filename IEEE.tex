@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage{deauthor}
-\usepackage{times}
+\usepackage{times, enumerate}
 \usepackage{graphicx}
 \usepackage{authblk}
 \usepackage{hyperref}
@@ -151,7 +151,16 @@ To evaluate our choices, we performed a through performance evaluation and deter
 We developed a benchmark specific to Plenario because unlike other geospatial benchmarks, Plenario has no separate database instantiation and query generation phase; database tables and queries are determined by an incoming user-workload leading to an openly-writable spatial storage system. To simulate the discovery and exploration phases in Plenario, we simulated a closed loop Markov-chain synthetic workload generator in Python. The  Markov-chain consists of two different states, ``add\_data'' and ``query", in which the ``query phase'' consists of five different states, including ``initial\_query'', ``expand\_time'', ``narrow\_time'', ``expand\_geography'' and ``narrow\_geography''.
 The current state gets updated after each query and the system chooses between query with probability 0.85 and upload with probability 0.15. Within the query phase, expansion and reduction of spatial attributes occurs with equal probability, and spatial attributes are chosen over time attributes by 0.6 to 0.4. These probabilities are chosen based on user query logs and estimated patterns. 
 
-As part of a session, users often change spatial and time attributes by either expanding them or narrowing them from an initial specification. Expansion and reduction of time attribute is simply achieved by changing both the starting and ending dates by an equal amount such that the new date range is a factor $k$ times of that of the old date range. $k$ is chosen so as to reflect daily, weekly, and monthly patterns. To expand and narrow spatial boundaries such that the new query is again a convex polygon (which is a requirement of the Plenario query API) we follow a simple single parametric method. For expansion, given an $N$-sided polygon with coordinates $(x_1,y_1),\ldots,(x_n, y_n)$, (i) Find the smallest rectangle that exactly covers all the vertices of the polygon by finding the maximum and minimum of the coordinates of all the vertices; (ii) Fix the center of the rectangle and expand it outwards by an expansion factor of $k$; (iii) Divide the rectangle into four equal sub-rectangles: top-left, top-right, bottom-left and bottom-right; (iv) For each vertex of the polygon, identify the subrectangle it is located in, and create a new point in the region of the box further from the center than the vertex is; (v) The newly simulated points form the vertices of our new polygon. The same algorithm works for narrowing the polygon except instead of expanding by a factor $k$, we narrow by $k$.
+As part of a session, users often change spatial and time attributes by either expanding them or narrowing them from an initial specification. Expansion and reduction of time attribute is simply achieved by changing both the starting and ending dates by an equal amount such that the new date range is a factor $k$ times of that of the old date range. $k$ is chosen so as to reflect daily, weekly, and monthly patterns. To expand and narrow spatial boundaries such that the new query is again a convex polygon (which is a requirement of the Plenario query API) we follow a simple single parametric method. For expansion, given an $N$-sided polygon with coordinates $(x_1,y_1),\ldots,(x_n, y_n)$,
+\begin{enumerate}[I.]
+\itemsep0em 
+ \item Find the smallest rectangle that exactly covers all the vertices of the polygon by finding the maximum and minimum of the coordinates of all the vertices; 
+ \item Fix the center of the rectangle and expand it outwards by an expansion factor of $k$; 
+ \item Divide the rectangle into four equal sub-rectangles: top-left, top-right, bottom-left and bottom-right; 
+ \item For each vertex of the polygon, identify the sub-rectangle it is located in, and create a new point in the region of the box further from the center than the vertex is;
+ \item The newly simulated points form the vertices of our new polygon. 
+ \end{enumerate}
+ The same algorithm works for narrowing the polygon except instead of expanding by a factor $k$, we narrow by $k$. 
 
 
 \subsection{Evaluation}
