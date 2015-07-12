@@ -223,7 +223,7 @@ We compare the three databases for ingesting data (Table \ref{tab1}). Note that 
 Figure \ref{fg:thrpt} compares the concurrent cost of the querying and update in terms of transactions per second. Given the fast uploads Accumulo is able to achieve higher number of transactions per second, even though it is not running the queries against a spatial index. This is indeed surprising and exciting result, which demonstrates the benefits of using the Accumulo instance especially as thousands of datasets are added to Plenario and the system needs to scale out. 
 In RDBMSs, R-trees (and other spatial indices) are external to the data and must be updated and computed when new features are added. This is computationally intensive and is affecting performance adversely as data size increases.
 
-Finally, in Table \ref{tab2} we compare the cost of hosting Plenario on different size instances AWS. Given that Chicago Plenario instance is 100GB in size, and most queries are fetching small datasets of a few kibobytes to maximum of 1GB,  currently even a large instance is sufficient to host Plenario in terms of the cost benefit ratio. While currently sustainable, this result must be examined in lieu of projected growth. 
+Finally, in Table \ref{tab2} we compare the cost of hosting Plenario on different size instances AWS. Given that Chicago Plenario instance is 100GB in size, and most queries are fetching small datasets of a few kibobytes to maximum of 1GB,  currently even a large instance is sufficient to host Plenario in terms of the cost benefit ratio. While currently sustainable, this result must be examined in lieu of projected growth and other similar studies \cite{cloud-db}
 
 %the team is also beginning to analyze the scalability of the Master Table approach and of the specific database implementation.
 
@@ -340,7 +340,7 @@ The Plenario project is funded by the John D. and Catherine T. MacArthur Foundat
 \begin{thebibliography}{1}
 
 \bibitem{maksimovic_2011}
-Maksimovic, M.D.; Veljkovic, N.Z.; Stoimenov, L.V., ``Platforms for open government data,'' Telecommunications Forum (TELFOR), 2011 19th, vol., no., pp.1234,1237, 22-24 Nov. 2011. doi: 10.1109/TELFOR.2011.6143774
+Maksimovic, M.D., Veljkovic, N.Z., and Stoimenov, L.V., ``Platforms for open government data,'' Telecommunications Forum (TELFOR), 2011 19th, vol., no., pp.1234,1237, 22-24 Nov. 2011. doi: 10.1109/TELFOR.2011.6143774
 
 \bibitem{windygrid}
 ``Chicago's WindyGrid: Taking Situational Awareness to a New Level.'' \url{http://datasmart.ash.harvard.edu/news/article/chicagos-windygrid-taking-situational-awareness-to-a-new-level-259} [Accessed July 7, 2015]
@@ -393,6 +393,8 @@ Wong, D., ``The modifiable areal unit problem (MAUP)'', In Fotheringham, A Stewa
 \bibitem{geohash}
 ``Geohash," \url{https://en.wikipedia.org/wiki/Geohash} [Accessed July 7, 2015]
 
+\bibitem{cloud-db}
+Malik, T., Chard, K., and Foster, I., ``Benchmarking cloud-based tagging services''. In \textit{In IEEE 30th International Conference of Data Engineering Workshops (ICDEW)}, pp.~231-238 (2014)
 \end{thebibliography}
 
 
